@@ -35,6 +35,6 @@ Usage Example:
     
 ''',
     install_requires=[
-        "lxml >= 3.7.1",
+        "lxml >= 3.7.1", 'flask', 'requests',
     ]
 )
