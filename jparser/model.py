@@ -91,9 +91,11 @@ class PageModel(object):
                 r'(([0-9]{2}:[0-9]{2}:[0-9]{2})|' \
                 r'([0-9]{2}:[0-9]{2}))?$'
         t = re.compile(regex)
-        for time in t.findall(self.doc):
-            return time
+        time = None
+        for t in t.findall(self.doc):
+            time = t
             break
+        return time
 
     def extract(self):
         title = self.extract_title()
