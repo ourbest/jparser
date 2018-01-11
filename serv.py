@@ -1,10 +1,11 @@
 #!/bin/evn python
-import urllib2
 import json
+import requests
 import time
 import traceback
-import requests
+
 from flask import Flask, request, render_template
+
 from jparser import PageModel
 
 app = Flask(__name__)

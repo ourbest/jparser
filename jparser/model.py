@@ -97,10 +97,20 @@ class PageModel(object):
             break
         return time
 
+    def extract_author(self):
+        regex = r'来源(：)?[\u4e00-\u9fa5]{5,10}'
+        t = re.compile(regex)
+        author = None
+        for t in t.findall(self.doc):
+            author = t
+            break
+        return author
+
     def extract(self):
         title = self.extract_title()
         region = self.region.locate()
         time = self.extract_time()
+        author = self.extract_author()
         if region is None:
             return {'title': '', 'content': []}
         rm_tag_set = set([])
@@ -117,4 +127,4 @@ class PageModel(object):
         for el in rm_tag_set:
             el.drop_tag()
         content = self.extract_content(region)
-        return {"title": title, "content": content, "time": time}
+        return {"title": title, "content": content, "time": time, "author": author}
