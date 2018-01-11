@@ -1,21 +1,25 @@
-# jparser
-A readability parser which can extract title, content, images from html pages
+# eparser
+A readability parser which can extract title,time,author, content, images from html pages
 
 Install:
 
-    pip install jparser
+    pip install eparser
     （requirement: lxml）
 
 Usage Example:
 
     import urllib2
-    from jparser import PageModel
+    from eparser import PageModel
     html = urllib2.urlopen("http://news.sohu.com/20170512/n492734045.shtml").read().decode('gb18030')
     pm = PageModel(html)
     result = pm.extract()
     
     print "==title=="
     print result['title']
+    print "==author=="
+    print result['author']
+    print "==time=="
+    print result['time']
     print "==content=="
     for x in result['content']:
         if x['type'] == 'text':
@@ -23,6 +27,6 @@ Usage Example:
         if x['type'] == 'image':
             print "[IMAGE]", x['data']['src']
     
-Demo:
+# Demo:
 
-http://jparser.duapp.com/
+# http://jparser.duapp.com/

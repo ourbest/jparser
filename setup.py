@@ -5,21 +5,21 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='jparser',
-    author="Sun, Junyi",
-    version='0.0.20',
+    name='eparser',
+    author="Eric.Soong",
+    version='0.0.1',
     license='MIT',
 
-    packages=["jparser"],
+    packages=["eparser"],
 
-    description="A robust parser which can extract title, content, images from html pages",
+    description="A robust parser which can extract title,time,author, content, images from html pages",
     long_description='''
 Usage Example:
 ^^^^^^^^^^^^^^^^^^^^^
 ::
 
     import urllib2
-    from jparser import PageModel
+    from eparser import PageModel
     html = urllib2.urlopen("http://news.sohu.com/20170512/n492734045.shtml").read().decode('gb18030')
     pm = PageModel(html)
     result = pm.extract()

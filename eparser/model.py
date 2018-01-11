@@ -3,14 +3,14 @@
 import re
 import lxml
 import lxml.html
-import urlparse
+from urllib import parse
 from .tags_util import clean_tags_only, clean_tags_hasprop, clean_tags_exactly, clean_tags
 from .region import Region
 
 
 class PageModel(object):
     def __init__(self, page, url=""):
-        assert type(page) is unicode
+        assert type(page) is lxml.unicode
         for tag in ['style', 'script']:
             page = clean_tags(page, tag)
         page = clean_tags_hasprop(page, "div", "(display:.?none|comment|measure)")
@@ -61,12 +61,12 @@ class PageModel(object):
             elif item.tag == 'img':
                 for img_prop in ('original', 'file', 'data-original', 'src-info', 'data-src', 'src'):
                     src = item.get(img_prop)
-                    if src != None:
+                    if src is not None:
                         break
                 if self.url != "":
                     if not src.startswith("/") and not src.startswith("http") and not src.startswith("./"):
                         src = "/" + src
-                    src = urlparse.urljoin(self.url, src, False)
+                    src = parse.urljoin(self.url, src, False)
                 contents.append({"type": "image", "data": {"src": src}})
             else:
                 pass

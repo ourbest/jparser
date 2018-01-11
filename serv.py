@@ -6,7 +6,7 @@ import traceback
 
 from flask import Flask, request, render_template
 
-from jparser import PageModel
+from eparser import PageModel
 
 app = Flask(__name__)
 
