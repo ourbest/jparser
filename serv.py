@@ -1,10 +1,9 @@
-#!/bin/evn python
 import json
-import requests
+import sys
 import time
-import traceback
 
-from flask import Flask, request, render_template
+import requests
+from flask import Flask, request, render_template, jsonify
 
 from eparser import PageModel
 
@@ -20,29 +19,47 @@ def index():
 def parser():
     t1 = time.time()
     url = request.args.get('url')
-    try:
-        if url and url.strip() != "":
-            url = url.strip()
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36'}
-            rsps = requests.get(url, headers=headers)
-            try:
-                page = rsps.content.decode('utf-8')
-            except:
-                page = rsps.content.decode('gb18030', 'ignore')
-        else:
-            page = request.form.get("html_content")
-        t2 = time.time()
-        pm = PageModel(page, url)
-        result = pm.extract()
-        t3 = time.time()
-    except:
-        traceback.print_exc()
-        return "download url failed"
+    if url and url.strip() != "":
+        page = _get_url_content(url)
+    else:
+        page = request.form.get("html_content")
+    t2 = time.time()
+    pm = PageModel(page, url)
+    result = pm.extract()
+    t3 = time.time()
     return render_template("result.html", data=result['content'], title=result['title'],
                            json_s=json.dumps(result, indent=4),
                            download_cost=t2 - t1, extract_cost=t3 - t2)
 
 
+@app.route('/article', methods=["GET", "POST"])
+def article():
+    url = request.args.get('url')
+    code = 100
+
+    if url and url.strip():
+        url = url.strip()
+        page = _get_url_content(url)
+        pm = PageModel(page, url)
+        result = pm.extract()
+        code = 0
+
+    return jsonify(code=code, result=result)
+
+
+def _get_url_content(url):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) '
+                      'AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/63.0.3239.132 Safari/537.36'}
+    rsps = requests.get(url, headers=headers)
+    try:
+        page = rsps.content.decode('utf-8')
+    except:
+        page = rsps.content.decode('gb18030', 'ignore')
+
+    return page
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8838, debug=True)
+    app.run(host="0.0.0.0", port=8838, debug='release' != sys.argv[1] if len(sys.argv) >= 2 else '')

@@ -1,26 +1,25 @@
-#!/bin/env python
-# encoding=utf-8
 import re
-import lxml
-import lxml.html
 from urllib import parse
-from .tags_util import clean_tags_only, clean_tags_hasprop, clean_tags_exactly, clean_tags
+
+from lxml import html
+
 from .region import Region
+from .tags_util import clean_tags_only, clean_tags_hasprop, clean_tags
 
 
 class PageModel(object):
     def __init__(self, page, url=""):
-        assert type(page) is lxml.unicode
         for tag in ['style', 'script']:
             page = clean_tags(page, tag)
         page = clean_tags_hasprop(page, "div", "(display:.?none|comment|measure)")
         page = clean_tags_only(page, "(span|section|font|em)")
-        self.doc = lxml.html.fromstring(page)
+        self.doc = html.fromstring(page)
         self.url = url
         self.region = Region(self.doc)
         self.impurity_threshold = 30
         self.anchor_ratio_limit = 0.3
         self.stripper = re.compile(r'\s+')
+        self.html = page
 
     def extract_content(self, region):
         items = region.xpath('.//text()|.//img|./table')
@@ -29,11 +28,13 @@ class PageModel(object):
             if hasattr(item, 'tag'):
                 continue
             t = item.getparent().tag
-            if t not in tag_hist:
-                tag_hist[t] = 0
-            tag_hist[t] += len(item.strip())
+            if isinstance(t, str):
+                if t not in tag_hist:
+                    tag_hist[t] = 0
+                tag_hist[t] += len(item.strip())
         winner_tag = None
         if len(tag_hist) > 0:
+            print(tag_hist.items())
             winner_tag = max((c, k) for k, c in tag_hist.items())[1]
         contents = []
         for item in items:
@@ -53,7 +54,7 @@ class PageModel(object):
                 if item != region:
                     for el in item.xpath(".//a"):
                         el.drop_tag()
-                    table_s = lxml.html.tostring(item)
+                    table_s = html.tostring(item)
                     contents.append({"type": "html", "data": table_s})
                 else:
                     for sub_item in item.xpath("//td/text()"):
@@ -92,7 +93,7 @@ class PageModel(object):
                 r'([0-9]{2}:[0-9]{2}))?$'
         t = re.compile(regex)
         time = None
-        for t in t.findall(self.doc):
+        for t in t.findall(self.html):
             time = t
             break
         return time
@@ -101,7 +102,7 @@ class PageModel(object):
         regex = r'来源(：)?[\u4e00-\u9fa5]{5,10}'
         t = re.compile(regex)
         author = None
-        for t in t.findall(self.doc):
+        for t in t.findall(self.html):
             author = t
             break
         return author
