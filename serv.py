@@ -37,12 +37,17 @@ def article():
     url = request.args.get('url')
     code = 100
 
-    if url and url.strip():
-        url = url.strip()
-        page = _get_url_content(url)
-        pm = PageModel(page, url)
-        result = pm.extract()
-        code = 0
+    try:
+        if url and url.strip():
+            url = url.strip()
+            page = _get_url_content(url)
+            pm = PageModel(page, url)
+            result = pm.extract()
+            code = 0
+        else:
+            result = '错误的URL'
+    except:
+        result = sys.exc_info()[0]
 
     return jsonify(code=code, result=result)
 
