@@ -12,4 +12,4 @@ ADD . .
 
 EXPOSE 8838
 
-ENTRYPOINT ["python", "serv.py", "release"]
+ENTRYPOINT ["gunicorn", "-k", "gevent", "-t", "600", "-w", "4", "-b", "0.0.0.0:8838", "wsgi:application"]
