@@ -9,6 +9,7 @@ from .tags_util import clean_tags_only, clean_tags_hasprop, clean_tags
 
 class PageModel(object):
     def __init__(self, page, url=""):
+        self.raw_html = page
         for tag in ['style', 'script']:
             page = clean_tags(page, tag)
         page = clean_tags_hasprop(page, "div", "(display:.?none|comment|measure)")
@@ -75,6 +76,11 @@ class PageModel(object):
 
     def extract_title(self):
         doc = self.doc
+        if '://mp.weixin.qq.com/' in self.url:
+            title = re.findall(r'var msg_title = "(.+)"', self.raw_html)
+            if title:
+                return title[0]
+
         tag_title = doc.xpath("/html/head/title/text()")
         s_tag_title = "".join(re.split(r'_|-', "".join(tag_title))[:1])
         title_candidates = doc.xpath('//h1/text()|//h2/text()|//h3/text()|//p[@class="title"]/text()')
