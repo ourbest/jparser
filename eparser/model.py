@@ -119,7 +119,7 @@ class PageModel(object):
         time = self.extract_time()
         author = self.extract_author()
         if region is None:
-            return {'title': '', 'content': []}
+            return {'title': title if title else '', 'content': []}
         rm_tag_set = set([])
         for p_el in region.xpath(".//p|.//li"):
             child_links = p_el.xpath(".//a/text()")
