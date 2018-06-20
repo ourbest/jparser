@@ -47,7 +47,7 @@ def article():
         else:
             result = '错误的URL'
     except:
-        result = sys.exc_info()[0]
+        result = str(sys.exc_info()[0])
 
     return jsonify(code=code, result=result)
 
