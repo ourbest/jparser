@@ -6,8 +6,12 @@ import requests
 from flask import Flask, request, render_template, jsonify
 
 from eparser import PageModel
+from raven.contrib.flask import Sentry
 
 app = Flask(__name__)
+
+sentry = Sentry(app,
+                dsn='http://f0c276b7792144fb9efba0c000f979ce:6bc75bbb12764b16b2ff6d35d465b737@10.9.144.173:9000/14')
 
 
 @app.route("/")
@@ -34,6 +38,7 @@ def parser():
 
 @app.route('/article', methods=["GET", "POST"])
 def article():
+    current_time = time.time()
     url = request.args.get('url')
     code = 100
 
@@ -48,6 +53,10 @@ def article():
             result = '错误的URL'
     except:
         result = str(sys.exc_info()[0])
+
+    total = time.time() - current_time
+    if total > 60:
+        sentry.captureMessage('process url %s too long %ss' % (url, total))
 
     return jsonify(code=code, result=result)
 
