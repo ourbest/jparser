@@ -67,7 +67,7 @@ def _get_url_content(url):
                       'AppleWebKit/537.36 (KHTML, like Gecko) '
                       'Chrome/63.0.3239.132 Safari/537.36'}
     with requests.get(url, headers=headers, stream=True) as resp:
-        if int(resp.headers.get('content-length', '0')) < 1024 * 1024:
+        if int(resp.headers.get('content-length', '0')) > 1024 * 1024:
             return ''
         try:
             page = resp.content.decode('utf-8')
