@@ -45,10 +45,14 @@ def article():
     try:
         if url and url.strip():
             url = url.strip()
-            page = _get_url_content(url)
-            pm = PageModel(page, url)
-            result = pm.extract()
-            code = 0
+            if not url.startswith('http://www.qle.me'):
+                page = _get_url_content(url)
+                pm = PageModel(page, url)
+                result = pm.extract()
+                code = 0
+            else:
+                result = '错误的URL'
+
         else:
             result = '错误的URL'
     except:
