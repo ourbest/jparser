@@ -56,6 +56,8 @@ class PageModel(object):
                     for el in item.xpath(".//a"):
                         el.drop_tag()
                     table_s = html.tostring(item)
+                    if isinstance(table_s, bytes):
+                        table_s = table_s.decode('utf-8')
                     contents.append({"type": "html", "data": table_s})
                 else:
                     for sub_item in item.xpath("//td/text()"):
