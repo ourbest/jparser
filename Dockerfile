@@ -12,4 +12,4 @@ ADD . .
 
 EXPOSE 8838
 
-ENTRYPOINT ["gunicorn", "-k", "gevent", "-t", "600", "-w", "4", "-b", "0.0.0.0:8838", "wsgi:application"]
+ENTRYPOINT ["gunicorn", "-k", "gevent", "-t", "180", "-w", "4", "-b", "0.0.0.0:8838", "wsgi:application"]

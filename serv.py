@@ -70,7 +70,7 @@ def _get_url_content(url):
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) '
                       'AppleWebKit/537.36 (KHTML, like Gecko) '
                       'Chrome/63.0.3239.132 Safari/537.36'}
-    with requests.get(url, headers=headers, stream=True) as resp:
+    with requests.get(url, headers=headers, stream=True, timeout=(10, 30)) as resp:
         if int(resp.headers.get('content-length', '0')) > 1024 * 1024:
             return ''
         try:
