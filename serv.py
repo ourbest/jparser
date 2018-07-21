@@ -1,13 +1,12 @@
 import json
-import os
 import sys
 import time
 
 import requests
 from flask import Flask, request, render_template, jsonify
+from raven.contrib.flask import Sentry
 
 from eparser import PageModel
-from raven.contrib.flask import Sentry
 
 app = Flask(__name__)
 
@@ -37,7 +36,7 @@ def parser():
                            download_cost=t2 - t1, extract_cost=t3 - t2)
 
 
-@app.route("/url/article", methods=["GET", "POST"])
+@app.route("/spi/url/article", methods=["GET", "POST"])
 @app.route('/article', methods=["GET", "POST"])
 def article():
     current_time = time.time()
