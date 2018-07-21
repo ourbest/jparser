@@ -40,7 +40,7 @@ def parser():
 @app.route('/article', methods=["GET", "POST"])
 def article():
     current_time = time.time()
-    url = request.args.get('url')
+    url = request.values.get('url')
     code = 100
 
     try:
