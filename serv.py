@@ -4,14 +4,13 @@ import time
 
 import requests
 from flask import Flask, request, render_template, jsonify
-from raven.contrib.flask import Sentry
 
+import sentry_reporter
 from eparser import PageModel
 
 app = Flask(__name__)
 
-sentry = Sentry(app,
-                dsn='http://f0c276b7792144fb9efba0c000f979ce:6bc75bbb12764b16b2ff6d35d465b737@10.9.144.173:9000/14')
+sentry_reporter.init_sentry(app)
 
 
 @app.route("/")
@@ -61,7 +60,7 @@ def article():
 
     total = time.time() - current_time
     if total > 60:
-        sentry.captureMessage('process url %s too long %ss' % (url, total))
+        sentry_reporter.sentry.captureMessage('process url %s too long %ss' % (url, total))
 
     return jsonify(code=code, result=result)
 

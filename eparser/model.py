@@ -3,6 +3,7 @@ from urllib import parse
 
 from lxml import html
 
+from sentry_reporter import sentry
 from .region import Region
 from .tags_util import clean_tags_only, clean_tags_hasprop, clean_tags
 
@@ -85,6 +86,8 @@ class PageModel(object):
             title = re.findall(r'var msg_title = "(.+)"', self.raw_html)
             if title:
                 return title[0].strip()
+
+            sentry.captureMessage('process url %s error, cannot extract title' % self.url)
 
         tag_title = doc.xpath("/html/head/title/text()")
         s_tag_title = "".join(re.split(r'_|-', "".join(tag_title))[:1])
