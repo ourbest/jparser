@@ -79,10 +79,11 @@ class PageModel(object):
 
     def extract_title(self):
         doc = self.doc
+        title = re.findall(r'<meta property="og:title" content="(.+)"', self.raw_html)
+        if title:
+            return title[0]
+
         if '://mp.weixin.qq.com/' in self.url:
-            title = re.findall(r'<meta property="og:title" content="(.+)" />', self.raw_html)
-            if title:
-                return title[0]
             title = re.findall(r'var msg_title = "(.+)"', self.raw_html)
             if title:
                 return title[0].strip()
