@@ -8,8 +8,8 @@ ADD requirements.txt .
 
 RUN pip install -r requirements.txt
 
-ADD eparser ./
-ADD templates ./
+ADD eparser eparser
+ADD templates templates
 ADD "*.py" ./
 
 EXPOSE 8838
