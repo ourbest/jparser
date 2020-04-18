@@ -1,12 +1,10 @@
-FROM python:3.6
-
-RUN apt-get update && apt-get install -y vim
+FROM ourbest/python3
 
 RUN mkdir -p /code/
 WORKDIR /code/
 ADD requirements.txt .
 
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt -i https://pypi.douban.com/simple
 
 ADD eparser eparser
 ADD templates templates
