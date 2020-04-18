@@ -47,6 +47,10 @@ def article():
             url = url.strip()
             if not url.startswith('http://www.qle.me'):
                 page = _get_url_content(url)
+                if 'error' == page:
+                    page = _get_url_content(url)
+                if 'error' == page:
+                    return jsonify(code=code, result='访问过于频繁')
                 pm = PageModel(page, url)
                 result = pm.extract()
                 code = 0
@@ -80,6 +84,10 @@ def _get_url_content(url):
             page = resp.content.decode('utf-8')
         except:
             page = resp.content.decode('gb18030', 'ignore')
+
+        if '访问过于频繁，请用微信扫描二维码' in page:
+            sentry_reporter.sentry.captureMessage('process url %s 访问过于频繁' % url)
+            return 'error'
 
         return page
 
