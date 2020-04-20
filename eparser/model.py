@@ -36,7 +36,6 @@ class PageModel(object):
                 tag_hist[t] += len(item.strip())
         winner_tag = None
         if len(tag_hist) > 0:
-            print(tag_hist.items())
             winner_tag = max((c, k) for k, c in tag_hist.items())[1]
         contents = []
         for item in items:
@@ -114,6 +113,14 @@ class PageModel(object):
         return time
 
     def extract_author(self):
+        name = self.doc.xpath('//a[@id="js_name"]/text()')
+        if name:
+            return '微信公众号：' + name[0].strip()
+
+        creator = re.findall(r'<meta name="author" content="(.+?)" />', self.raw_html)
+        if creator:
+            return creator[0]
+
         regex = r'来源(：)?[\u4e00-\u9fa5]{5,10}'
         t = re.compile(regex)
         author = None
