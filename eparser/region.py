@@ -6,7 +6,7 @@ from math import log, e
 
 class Region(object):
 
-    def __init__(self, doc):
+    def __init__(self, doc, url):
         self.doc = doc
         self.max_depth = 4
         self.region_ratios = (0.6, 0.75, 1.0)
@@ -15,6 +15,7 @@ class Region(object):
         self.window_size = 2
         self.candidates_count = 3
         self.stripper = re.compile(r'\s+')
+        self.url = url
 
     def find_common_parent(self, k1, k2):
         all_parent = []
@@ -42,6 +43,12 @@ class Region(object):
         return p1
 
     def locate(self):
+        if '://mp.weixin.qq.com/' in self.url:
+            # 微信公众号的文章
+            found = self.doc.xpath('.//div[@id="js_content"]')
+            if found:
+                return found[0]
+
         p_list = self.doc.xpath('//p/text()|//div/text()|//td/text()')
         unimportant_texts = set(self.doc.xpath("//a/text()|//dd//text()"))
         n_p = len(p_list)

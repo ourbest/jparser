@@ -17,7 +17,7 @@ class PageModel(object):
         page = clean_tags_only(page, "(span|section|font|em)")
         self.doc = html.fromstring(page)
         self.url = url
-        self.region = Region(self.doc)
+        self.region = Region(self.doc, url)
         self.impurity_threshold = 30
         self.anchor_ratio_limit = 0.3
         self.stripper = re.compile(r'\s+')
@@ -151,3 +151,6 @@ class PageModel(object):
             el.drop_tag()
         content = self.extract_content(region)
         return {"title": title, "content": content, "time": time, "author": author}
+
+    def parse_toutiao(self):
+        pass
